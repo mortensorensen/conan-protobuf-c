@@ -42,7 +42,9 @@ class ProtobufcConan(ConanFile):
 
         # cmake
         self.run('mkdir -p pkg && mkdir -p build')
-        self.run('cd build && cmake %s -DCMAKE_INSTALL_PREFIX:PATH="%s" -f ../' % (cmake.command_line, finished_package))
+        self.run('cd build && cmake %s -DCMAKE_SKIP_BUILD_RPATH=FALSE ' % cmake.command_line +
+            '-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE -DCMAKE_INSTALL_RPATH="%s/lib" ' % finished_package +
+            '-DCMAKE_INSTALL_PREFIX:PATH="%s" -DMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -f ../' % finished_package)
 
         # build
         self.run("cd build && make %s install" % make_options)
