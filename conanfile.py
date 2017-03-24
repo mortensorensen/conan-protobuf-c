@@ -12,7 +12,7 @@ class ProtobufcConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
     options = { "shared": [True, False] }
-    default_options = "shared=True"
+    default_options = "shared=False"
     description = "conan package for protobuf-c"
     requires = "Protobuf/[>2.0,<3.0]@kmaragon/stable"
     exports = "CMakeLists.txt"
