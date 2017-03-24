@@ -11,6 +11,8 @@ class ProtobufcConan(ConanFile):
     url = "https://github.com/protobuf-c/protobuf-c"
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
+    options = { "shared": [True, False] }
+    default_options = "shared=True"
     description = "conan package for protobuf-c"
     requires = "Protobuf/[>2.0,<3.0]@kmaragon/stable"
     exports = "CMakeLists.txt"
@@ -43,6 +45,7 @@ class ProtobufcConan(ConanFile):
         # cmake
         self.run('mkdir -p pkg && mkdir -p build')
         self.run('cd build && cmake %s -DCMAKE_SKIP_BUILD_RPATH=FALSE ' % cmake.command_line +
+            '-DBUILD_SHARED_LIBS=%s' % ("TRUE" if self.options.shared else "FALSE") +
             '-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE -DCMAKE_INSTALL_RPATH="%s/lib" ' % finished_package +
             '-DCMAKE_INSTALL_PREFIX:PATH="%s" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -f ../' % finished_package)
 
