@@ -42,10 +42,13 @@ class ProtobufcConan(ConanFile):
         tools.replace_in_file(orig_cmakelists, "CMAKE_SOURCE_DIR", "CMAKE_CURRENT_SOURCE_DIR")
         tools.replace_in_file(orig_cmakelists, "CMAKE_BINARY_DIR", "CMAKE_CURRENT_BINARY_DIR")
 
+        libtype = "SHARED" if self.options.shared else "STATIC"
+        tools.replace_in_file(orig_cmakelists, 'ADD_LIBRARY(protobuf-c ${PC_SOURCES})', 'ADD_LIBRARY(protobuf-c %s ${PC_SOURCES})' % libtype)
+
         # cmake
         self.run('mkdir -p pkg && mkdir -p build')
         self.run('cd build && cmake %s -DCMAKE_SKIP_BUILD_RPATH=FALSE ' % cmake.command_line +
-            '-DBUILD_SHARED_LIBS=%s' % ("TRUE" if self.options.shared else "FALSE") +
+            '-DBUILD_SHARED_LIBS:BOOL=%s' % ("TRUE" if self.options.shared else "FALSE") +
             '-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE -DCMAKE_INSTALL_RPATH="%s/lib" ' % finished_package +
             '-DCMAKE_INSTALL_PREFIX:PATH="%s" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE -f ../' % finished_package)
 
@@ -57,10 +60,10 @@ class ProtobufcConan(ConanFile):
         self.copy("*", dst="include", src="pkg/include")
 
     def package_info(self):
-        if self.settings.os == "Macos":
-            self.cpp_info.libs = ["libprotobuf-c.9.dylib"]
-        else:
+        if self.options.shared:
             self.cpp_info.libs = ["protobuf-c"]
+        else:
+            self.cpp_info.libs = ["libprotobuf-c.a"]
         self.cpp_info.libdirs = ["lib"]
         self.cpp_info.includedirs = ["include"]
         self.cpp_info.bindirs = ["bin"]
