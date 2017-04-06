@@ -55,9 +55,9 @@ class ProtobufcConan(ConanFile):
         # build
         self.run("cd build && make %s install" % make_options)
     def package(self):
-        self.copy("*", dst="lib", src="pkg/lib")
-        self.copy("*", dst="bin", src="pkg/bin")
-        self.copy("*", dst="include", src="pkg/include")
+        self.copy("*", dst="lib", src="pkg/lib", links=True)
+        self.copy("*", dst="bin", src="pkg/bin", links=True)
+        self.copy("*", dst="include", src="pkg/include", links=True)
 
     def package_info(self):
         if self.options.shared:
