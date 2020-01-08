@@ -1,4 +1,4 @@
-#include <protobuf-c.h>
+#include <protobuf-c/protobuf-c.h>
 
 int main() {
     // this will crash. But we just need to make sure it compiles and links
